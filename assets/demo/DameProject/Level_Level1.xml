@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level name="Level1" minx="0" miny="0" maxx="320" maxy="320" bgColor = "0xff777777" >
+	<layer name="MainLayer" xScroll="1.000" yScroll="1.000" >
+		<map csv="DameProject/mapCSV_Level1_MainLayer.csv" tiles="tileset.png" x="0.000" y="0.000" tileWidth="16" tileHeight="16" hasHits="false" collIdx="1" drawIdx="1" />
+	</layer>
+	<layer name="DecorationLayer" xScroll="1.000" yScroll="1.000" >
+		<map csv="DameProject/mapCSV_Level1_DecorationLayer.csv" tiles="tileset.png" x="0.000" y="0.000" tileWidth="16" tileHeight="16" hasHits="false" collIdx="1" drawIdx="1" />
+	</layer>
+	<layer name="SpriteLayer" xScroll="1.000" yScroll="1.000" >
+		<sprite class="org.ivar.leveltools.demo.Test" name="TestSprite" x="168.00" y="24.00" angle="0.00" flip="false" xScale="1.00" yScale="1.00" linkId="2" >
+			<properties>
+				<prop name="testProperty" value="0" />
+			</properties>
+		</sprite>
+		<sprite class="org.ivar.leveltools.demo.Test" name="TestSprite" x="264.00" y="48.00" angle="0.00" flip="false" xScale="1.00" yScale="1.00" linkId="3" >
+			<properties>
+				<prop name="testProperty" value="0" />
+			</properties>
+		</sprite>
+		<sprite class="org.ivar.leveltools.demo.Test" name="TestSprite" x="160.00" y="72.00" angle="0.00" flip="false" xScale="1.00" yScale="1.00" linkId="1" >
+			<properties>
+				<prop name="testProperty" value="0" />
+			</properties>
+		</sprite>
+		<sprite class="org.ivar.leveltools.demo.Test" name="TestSprite" x="112.00" y="112.00" angle="0.00" flip="false" xScale="1.00" yScale="1.00" linkId="0" >
+			<properties>
+				<prop name="testProperty" value="0" />
+			</properties>
+		</sprite>
+	</layer>
+	<layer name="PathLayer" xScroll="1.000" yScroll="1.000" >
+		<path spline="false" closed ="false" >
+			<nodes>
+				<node x="64.00" y="56.00" />
+				<node x="152.00" y="240.00" />
+				<node x="256.00" y="184.00" />
+				<node x="232.00" y="120.00" />
+				<node x="184.00" y="96.00" />
+			</nodes>
+		</path>
+	</layer>
+	<links>
+		<link from="0" to="1">
+			<properties>
+				<prop name="asd" value="d" />
+			</properties>
+		</link>
+		<link from="2" to="3"/>
+		<link from="3" to="1"/>
+	</links>
+</level>

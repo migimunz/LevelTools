@@ -1,0 +1,9 @@
+<project name="LevelTools" url="ivar.rs" license="MIT">
+    <user name="migimunz"/>
+    <tag v="utility"/>
+	<tag v="game"/>
+    <description>LevelTools is a library that provides easy loading of level files from DAME and Tiled (experimental). For DAME, it supports tilemaps, sprite layers, paths and links.</description>
+    <version name="0.0.1">Initial version.</version>
+    <depends name="flixel"/>
+	<depends name="nme"/>
+</project>
