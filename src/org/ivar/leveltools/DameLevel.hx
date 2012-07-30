@@ -8,19 +8,45 @@ import org.flixel.FlxTilemap;
 import org.flixel.FlxPath;
 import org.ivar.leveltools.Level;
 import nme.installer.Assets;
-/**
- * ...
- * @author Nemanja Stojanovic
- */
 
+
+/**
+ * A function type used as a callback for adding links.
+ */
 typedef LinkAddCallback = FlxSprite -> FlxSprite -> Properties -> Void;
- 
+
+/**
+ * @author Nemanja Stojanovic
+ * This class deals with loading levels exported from DAME. It currently supports
+ * loading tilemap layers, sprite layers, paths layers and links between sprites. 
+ * Properties are loaded into a key-value structure and passed as arguments to callbacks, 
+ * however, individual tile properties are not yet supported.
+ */
 class DameLevel extends Level
 {
+	/**
+	 * A table of registered link IDs used to link sprites.
+	 */
 	private var linkIds:Hash<FlxSprite>;
+
+	/**
+	 * A table of parsed paths, stored by name.
+	 */
 	private var paths:Hash<FlxPath>;
+
+	/**
+	* A callback that is called whenever a link is loaded.
+	*/
 	private var linkAddCallback:LinkAddCallback;
 	
+	/**
+	* Constructs the object, initializes members and callbacks but doesn't actually load
+	* the level.
+	* @param assetsPath Path to the assets directory from the project's root dir (usually the one containing the .nmml file).
+	* @param tilemapAddCallback a callback that is called every time a tilemap is loaded.
+	* @param objectAddCallback a callback that is called every time an object (sprite) is loaded.
+	* @param linkAddCallback a callback that is called every time a link is loaded.
+	*/
 	public function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback, linkAddCallback:LinkAddCallback) 
 	{
 		super(assetsPath, tilemapAddCallback, objectAddCallback);
@@ -29,9 +55,14 @@ class DameLevel extends Level
 		paths 	= new Hash<FlxPath>();
 	}
 	
+	/**
+	 * Parses a level from a loaded xml file.
+	 * @param addToScene if this is true, the level will be added to the current state as soon as the level is loaded.
+	 * @param xml the loaded xml file containing the level to be loaded.
+	 * @return Nothing.
+	 */
 	private function parseLevel(addToScene:Bool, xml:Fast):Void
 	{
-		//<level name="Level1" minx="0" miny="0" maxx="320" maxy="320" bgColor = "0xff777777" >
 		name = xml.att.name;
 		for (layer in xml.nodes.layer)
 			parseLayer(layer);
@@ -42,7 +73,12 @@ class DameLevel extends Level
 		if (addToScene)
 			FlxG.getState().add(masterLayer);
 	}
-	
+
+	/**
+	 * Loads a single layer and adds it to the master layer.
+	 * @param layerNode the node that contains the layer
+	 * @return Nothing.
+	 */
 	private function parseLayer(layerNode:Fast):Void
 	{
 		var group:FlxGroup = new FlxGroup();
@@ -62,6 +98,14 @@ class DameLevel extends Level
 		masterLayer.add(group);
 	}
 	
+	/**
+	 * Loads a tilemap and adds it to the layer group. 
+	 * If specified, the tilemapAddCallback is called with the loaded tilemap as argument.
+	 * @param group The group of the layer this map belongs to
+	 * @param mapNode The node that contains tilemap data
+	 * @param layerNode The node that contains layer data
+	 * @return Nothing.
+	 */
 	private function parseTilemap(group:FlxGroup, mapNode:Fast, layerNode:Fast):Void
 	{
 		var map:FlxTilemap = new FlxTilemap();
@@ -83,6 +127,17 @@ class DameLevel extends Level
 			tilemapAddCallback(map);
 	}
 
+	/**
+	 * Loads a sprite and adds it to the layer group. The sprite is created using reflection, 
+	 * from the class name specified in Dame (the class name should contain the whole package). 
+	 * If the class doesn't exist, it is simply skipped. If the objectAddCallback is specified, 
+	 * it is called with the loaded sprite and it's properties as arguments.
+	 * @todo Maybe throw an exception when the sprite doesn't exist?
+	 * @param group The group of the layer this sprite belongs to.
+	 * @param spriteNode The node that contains sprite data
+	 * @param layerNode The node that contains layer data
+	 * @return Nothing.
+	 */
 	private function parseSprite(group:FlxGroup, spriteNode:Fast, layerNode:Fast):Void
 	{
 		var spriteClass	= Type.resolveClass(spriteNode.x.get("class"));
@@ -111,6 +166,15 @@ class DameLevel extends Level
 			objectAddCallback(sprite, properties);
 	}
 	
+	/**
+	 * Loads a path and adds it to the paths table under the name of the layer. Currently, 
+	 * only one path per layer is supported, until I find a better way to do this.
+	 * @todo Find a way around the path naming issue
+	 * @param group The group of the layer this path belongs to.
+	 * @param pathNode The node that contains path data
+	 * @param layerNode The node that contains layer data
+	 * @return Nothing.
+	 */
 	private function parsePath(group:FlxGroup, pathNode:Fast, layerNode:Fast):Void
 	{
 		var name:String = layerNode.att.name;
@@ -123,6 +187,12 @@ class DameLevel extends Level
 		paths.set(name, path);
 	}
 	
+	/**
+	 * Loads a link and calls the LinkAddCallback, passing the two linked sprites and the properties 
+	 * of the link. If the sprites the link references do not exist, the link is simply skipped.
+	 * @param linkNode The node that contains link data
+	 * @return Nothing.
+	 */
 	private function parseLinks(linkNode:Fast):Void
 	{
 		for (link in linkNode.nodes.link)
@@ -142,6 +212,16 @@ class DameLevel extends Level
 		}
 	}
 	
+	/**
+	 * Loads a level from a xml string using the specified asset path.
+	 * @param xmlString the xml exported from DAME.
+	 * @param assetsPath Path to the assets directory from the project's root dir (usually the one containing the .nmml file).
+	 * @param addToScene if this is true, the level will be added to the current state as soon as the level is loaded.
+	 * @param tilemapAddCallback a callback that is called every time a tilemap is loaded.
+	 * @param objectAddCallback a callback that is called every time an object (sprite) is loaded.
+	 * @param linkAddCallback a callback that is called every time a link is loaded.
+	 * @return a populated instance of DameLevel.
+	 */
 	public static function loadLevel(xmlString:String,
 		?assetsPath:String = "",
 		?addToScene:Bool = true,
@@ -157,6 +237,11 @@ class DameLevel extends Level
 		return level;
 	}
 	
+	/**
+	 * Returns a path with the specified name.
+	 * @param name name of the path.
+	 * @return a FlxPath instance if the path is found, null otherwise.
+	 */
 	public function getPath(name:String):FlxPath
 	{
 		return paths.get(name);

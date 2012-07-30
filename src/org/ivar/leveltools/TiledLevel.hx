@@ -113,6 +113,29 @@ class TiledLevel extends Level
 		if (defaultTileset == null)
 			defaultTileset = tileset;
 	}
+
+	private function addTilemap(name:String, width:Int, height:Int,
+		tileWidth:Int, tileHeight:Int,
+		csv:String, tilesetPath:String, properties:Properties):Void
+	{
+		var map:FlxTilemap = new FlxTilemap();
+		tilemaps.set(name, map);
+			
+		map.loadMap(csv, assetsPath + tilesetPath, 
+			tileWidth, tileHeight, 0,
+			properties.getInt("startindex", 0),
+			properties.getInt("drawindex", 1),
+			properties.getInt("collideindex", 1));
+		map.x = properties.getInt("x");
+		map.y = properties.getInt("y");
+		map.scrollFactor.x = properties.getFloat("scrollx", 1.0);
+		map.scrollFactor.y = properties.getFloat("scrolly", 1.0);
+		
+		map.visible = properties.getBool("visible", true);
+		map.setSolid(properties.getBool("solid", true));
+		
+		masterLayer.add(map);
+	}
 	
 	private function getTileset(name:String):Tileset
 	{

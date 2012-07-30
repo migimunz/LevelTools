@@ -3,7 +3,7 @@
 	<!-- NMML reference: https://gist.github.com/1763850 -->
 	
 	<!-- metadata, make sure 'package' is at least 3 segments (ie. com.mycompany.myproject) -->
-	<meta title="LevelTools" package="org.ivar.leveltools.LevelTools" version="1.0.0" company="migimunz" />
+	<meta title="LevelTools" package="org.ivar.leveltools.LevelTools" version="0.0.1" company="migimunz" />
 	
 	<!-- output -->
 	<app main="org.ivar.leveltools.LevelToolsDemo" file="LevelTools" path="bin" />
