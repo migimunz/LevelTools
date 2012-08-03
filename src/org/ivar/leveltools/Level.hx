@@ -71,39 +71,34 @@ class Level
 		layers						= new Hash<FlxGroup>();
 		this.assetsPath = assetsPath;
 	}
-
-	private function addTilemap(name:String, width:Int, height:Int,
-		tileWidth:Int, tileHeight:Int,
-		csv:String, tilesetPath:String, properties:Properties):Void
-	{
-		var map:FlxTilemap = new FlxTilemap();
-		tilemaps.set(name, map);
-			
-		map.loadMap(csv, assetsPath + tilesetPath, 
-			tileWidth, tileHeight, 0,
-			properties.getInt("startindex", 0),
-			properties.getInt("drawindex", 1),
-			properties.getInt("collideindex", 1));
-		map.x = properties.getInt("x");
-		map.y = properties.getInt("y");
-		map.scrollFactor.x = properties.getFloat("scrollx", 1.0);
-		map.scrollFactor.y = properties.getFloat("scrolly", 1.0);
-		
-		map.visible = properties.getBool("visible", true);
-		map.setSolid(properties.getBool("solid", true));
-		
-		masterLayer.add(map);
-	}
 	
+	/**
+	 * Returns a tilemap with the name <code>name</code>.
+	 * @param name name of the tilemap.
+	 * @return the tilemap or null if it doesn't exist.
+	 */
 	public function getTilemap(name:String):FlxTilemap
 	{
 		return tilemaps.get(name);
 	}
 	
+	/**
+	 * Returns a layer with the name <code>name</code>.
+	 * @param name name of the layer.
+	 * @return the layer or null if it doesn't exist.
+	 */
 	public function getLayer(name:String):FlxGroup
 	{
 		return layers.get(name);
 	}
 
+	/**
+	 * Returns the master layer.
+	 * @return the master layer.
+	 */
+	public function getMasterLayer():FlxGroup
+	{
+		return masterLayer;
+	}
 	
 }
