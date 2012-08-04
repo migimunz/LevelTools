@@ -4,6 +4,7 @@ import nme.installer.Assets;
 import org.flixel.FlxState;
 import org.ivar.leveltools.Level;
 import org.flixel.FlxG;
+import org.flixel.FlxTilemap;
 
 /**
  * @author Nemanja Stojanovic

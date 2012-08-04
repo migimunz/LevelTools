@@ -1,5 +1,5 @@
 
-all: lib install
+all: lib testlib
 
 lib:
 	zip -r src/LevelTools.zip src/haxelib.xml src/org/
@@ -7,12 +7,20 @@ lib:
 clean:
 	rm -f src/LevelTools.zip
 	rm -rf ./bin/*
-	rm -rf ./docs/*
 	rm -rf ./__chxdoctmp
 
-install:
+testlib:
 	haxelib test src/LevelTools.zip
 
-doc:
+docs:
 	haxelib run nme build ./application.nmml flash -xml
-	chxdoc -o docs --developer=true --installTemplate=true --templateDir=chxdoc-templates/migidoc/ bin/flash/types.xml
+	chxdoc -o docs \
+	--developer=true \
+	--installTemplate=true \
+	--templateDir=chxdoc-templates/migidoc/ \
+	--title='LevelTools API' \
+	--subtitle='https://github.com/migimunz/LevelTools' \
+	-f flash \
+	-f nme \
+	-f haxe \
+	bin/flash/types.xml
