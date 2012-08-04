@@ -38,7 +38,7 @@ Coming soon.
 #Examples  
 
 Loading a DAME level and retrieving individual layers:  
-<pre lang="haxe"><code>
+<pre><code>
 level = DameLevel.loadLevel(
 	Assets.getText("assets/DameProject/Level_DemoLevel1.xml"), //XML file exported from DAME
 	"assets/", //Assets directory
@@ -49,7 +49,7 @@ var spriteLayer = level.getLayer("SpriteLayer");
 </code></pre>  
 
 Iterating a tilemap with a for loop:  
-<pre lang="haxe"><code>
+<pre><code>
 using org.ivar.leveltools.LevelTools; //imports the extension methods
 /* ... */
 
@@ -60,7 +60,7 @@ for(tileId in mainTilemap.iterAll())
 </code></pre>  
 
 Alternatively, using `each*` methods provides more information and easier modification of the tilemap:  
-<pre lang="haxe"><code>
+<pre><code>
 private var flowerId = 5;
 /* ... */
 //Adds variation by randomly changing the first flower tile to different flowers.
