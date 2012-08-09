@@ -12,7 +12,8 @@ clean:
 testlib:
 	haxelib test src/LevelTools.zip
 
-docs:
+docs:	clean
+	rm -rf ./docs/*
 	haxelib run nme build ./application.nmml flash -xml
 	chxdoc -o docs \
 	--developer=true \

@@ -6,6 +6,7 @@ import org.flixel.FlxSprite;
 import org.flixel.FlxObject;
 import org.flixel.FlxTilemap;
 import org.flixel.FlxPath;
+import org.flixel.FlxPoint;
 import org.ivar.leveltools.Level;
 import nme.installer.Assets;
 
@@ -94,6 +95,9 @@ class DameLevel extends Level
 					parsePath(group, node, layerNode);
 			}
 		}
+		var scroll = new FlxPoint(Std.parseFloat(layerNode.att.xScroll), Std.parseFloat(layerNode.att.yScroll));
+		if(scroll.x != 1.0 || scroll.y != 1.0)
+			group.setAll("scrollFactor", scroll);
 		layers.set(layerNode.att.name, group);
 		masterLayer.add(group);
 	}
@@ -117,8 +121,6 @@ class DameLevel extends Level
 			0, 0,
 			Std.parseInt(mapNode.att.drawIdx),
 			Std.parseInt(mapNode.att.collIdx));
-		map.scrollFactor.x 	= Std.parseFloat(layerNode.att.xScroll);
-		map.scrollFactor.y 	= Std.parseFloat(layerNode.att.yScroll);
 		map.setSolid(mapNode.has.hasHits && mapNode.att.hasHits == "true");
 			
 		tilemaps.set(layerNode.att.name, map);
@@ -143,8 +145,15 @@ class DameLevel extends Level
 		var spriteClass	= Type.resolveClass(spriteNode.x.get("class"));
 		if (spriteClass == null)
 			return;
-		var sprite:FlxSprite = cast(Type.createInstance(spriteClass, []), FlxSprite);
+		//Since Type.createInstance can't deal with optional args, we have to pass all
+		//declared arguments manually. 
+		var constructor = Std.string(Reflect.field(spriteClass, "new"));
+		var arity = Std.parseInt(constructor.substr(constructor.indexOf(":") + 1));
+		var args = [];
+		for(i in 0 ... arity)
+			args.push(null);
 		
+		var sprite:FlxSprite = cast(Type.createInstance(spriteClass, args), FlxSprite);
 		sprite.x 		= Std.parseFloat(spriteNode.att.x);
 		sprite.y 		= Std.parseFloat(spriteNode.att.y);
 		sprite.angle	= Std.parseFloat(spriteNode.att.angle);
