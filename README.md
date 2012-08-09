@@ -21,7 +21,7 @@ Otherwise, there is nothing to build, just include the library sources in your c
 
 #Demos  
 
-Coming soon.  
+Demos can be found [here](https://github.com/migimunz/LevelToolsDemos).
 
 #Features  
 
