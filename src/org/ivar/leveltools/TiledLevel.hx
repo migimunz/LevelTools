@@ -1,6 +1,6 @@
 package org.ivar.leveltools;
 import haxe.xml.Fast;
-import nme.installer.Assets;
+import nme.Assets;
 import org.flixel.FlxState;
 import org.ivar.leveltools.Level;
 import org.flixel.FlxG;
