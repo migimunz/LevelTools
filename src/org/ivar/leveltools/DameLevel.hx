@@ -122,7 +122,8 @@ class DameLevel extends Level
 			Std.parseInt(mapNode.att.drawIdx),
 			Std.parseInt(mapNode.att.collIdx));
 		map.setSolid(mapNode.has.hasHits && mapNode.att.hasHits == "true");
-			
+		map.x = Std.parseInt( mapNode.att.x);
+		map.y = Std.parseInt( mapNode.att.y);
 		tilemaps.set(layerNode.att.name, map);
 		group.add(map);
 		if (tilemapAddCallback != null)
