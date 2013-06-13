@@ -1,6 +1,6 @@
 package org.ivar.leveltools;
 import haxe.xml.Fast;
-import nme.Assets;
+import openfl.Assets;
 import org.flixel.FlxState;
 import org.ivar.leveltools.Level;
 import org.flixel.FlxG;
@@ -46,7 +46,7 @@ private class Tileset
  * @author Nemanja Stojanovic
  * This class deals with loading levels created with Tiled Editor. So far, only loading tilesets
  * is supported and that's a bit experimental too. The problem is that Tiled uses idx 0 when there is no tile
- * and flixel uses 0 to index the first tile, and this doesn't play well with Haxe/Flixel at least. 
+ * and flixel uses 0 to index the first tile, and this doesn't play well with Haxe/Flixel at least.
  * The current solution is to decrement the index of all tiles (except zeros), but hopefully this is just
  * a temporary solution.
  */
@@ -55,7 +55,7 @@ class TiledLevel extends Level
 	/**
 	 * A table of tilesets
 	 */
-	private var tilesets:Hash<Tileset>;
+	private var tilesets:Map<String, Tileset>;
 
 	/**
 	 * The default tileset (will be set to the first tileset loaded)
@@ -70,10 +70,10 @@ class TiledLevel extends Level
 	 * @param linkAddCallback a callback that is called every time a link is loaded.
 	 * @return Nothing.
 	 */
-	public function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback) 
+	public function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback)
 	{
 		super(assetsPath, tilemapAddCallback, objectAddCallback);
-		tilesets = new Hash<Tileset>();
+		tilesets = new Map<String, Tileset>();
 	}
 	
 	/**
@@ -116,7 +116,7 @@ class TiledLevel extends Level
 			tileset = tilesets.get(tilesetName);
 		else
 			tileset = defaultTileset;
-		addTilemap(name, 
+		addTilemap(name,
 			width, height,
 			tileset.tileWidth, tileset.tileHeight,
 			csv, tileset.imagePath, properties);
@@ -124,7 +124,7 @@ class TiledLevel extends Level
 	
 	/**
 	 * Loads a tileset and stores it into the tilesets table. Used internally.
-	 * @param tilesetNode 
+	 * @param tilesetNode
 	 * @return Nothing.
 	 */
 	private function parseTileset(tilesetNode:Fast):Void
@@ -144,7 +144,7 @@ class TiledLevel extends Level
 	/**
 	 * Tiled editor exports csv that contains an extra ',' every line (as well as a few extra newlines),
 	 * which flixel refuses to parse.
-	 * This method parses the csv, changes the values (decrements all indexes) and generates a csv 
+	 * This method parses the csv, changes the values (decrements all indexes) and generates a csv
 	 * string flixel can parse.
 	 * @param csv the csv string.
 	 * @return parsed csv string.
@@ -203,7 +203,7 @@ class TiledLevel extends Level
 		var map:FlxTilemap = new FlxTilemap();
 		tilemaps.set(name, map);
 			
-		map.loadMap(csv, assetsPath + tilesetPath, 
+		map.loadMap(csv, assetsPath + tilesetPath,
 			tileWidth, tileHeight, 0,
 			properties.getInt("startindex", 0),
 			properties.getInt("drawindex", 1),

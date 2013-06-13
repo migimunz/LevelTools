@@ -3,7 +3,7 @@ import org.flixel.FlxGroup;
 import org.flixel.FlxObject;
 import org.flixel.FlxSprite;
 import org.flixel.FlxTilemap;
-import nme.installer.Assets;
+import openfl.Assets;
 
 /**
  * A function type used as a callback for adding objects.
@@ -19,7 +19,7 @@ typedef TilemapAddCallback 	= FlxTilemap -> Void;
  * @author Nemanja Stojanovic
  * The base class of other level loaders.
  */
-class Level 
+class Level
 {
 	/**
 	 * The group that contains all other groups.
@@ -29,12 +29,12 @@ class Level
 	/**
 	 * A table that contains the loaded tilemaps stored by name of the layer.
 	 */
-	private var tilemaps:Hash<FlxTilemap>;
+	private var tilemaps:Map<String, FlxTilemap>;
 
 	/**
 	 * A table that contains all the layers regardless of type, by the name of the layer.
 	 */
-	private var layers:Hash<FlxGroup>;
+	private var layers:Map<String, FlxGroup>;
 
 	/**
 	 * Name of the level.
@@ -43,7 +43,7 @@ class Level
 
 	/**
 	 * Path to the assets directory.
-	 */ 
+	 */
 	private var assetsPath:String = "assets/";
 
 	/**
@@ -62,13 +62,13 @@ class Level
 	* @param tilemapAddCallback a callback that is called every time a tilemap is loaded.
 	* @param objectAddCallback a callback that is called every time an object (sprite) is loaded.
 	*/
-	private function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback) 
+	private function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback)
 	{
 		this.tilemapAddCallback 	= tilemapAddCallback;
 		this.objectAddCallback 		= objectAddCallback;
 		masterLayer 				= new FlxGroup();
-		tilemaps			 		= new Hash<FlxTilemap>();
-		layers						= new Hash<FlxGroup>();
+		tilemaps			 		= new Map<String, FlxTilemap>();
+		layers						= new Map<String, FlxGroup>();
 		this.assetsPath = assetsPath;
 	}
 	
