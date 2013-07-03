@@ -1,5 +1,5 @@
 package org.ivar.leveltools;
-import org.flixel.FlxTilemap;
+import flixel.FlxTilemap;
 
 using org.ivar.leveltools.LevelTools;
 

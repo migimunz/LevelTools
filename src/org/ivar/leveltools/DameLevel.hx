@@ -1,12 +1,12 @@
 package org.ivar.leveltools;
+import flixel.group.FlxGroup;
+import flixel.tile.FlxTilemap;
 import haxe.xml.Fast;
-import org.flixel.FlxG;
-import org.flixel.FlxGroup;
-import org.flixel.FlxSprite;
-import org.flixel.FlxObject;
-import org.flixel.FlxTilemap;
-import org.flixel.FlxPath;
-import org.flixel.FlxPoint;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxObject;
+import flixel.FlxPath;
+import flixel.util.FlxPoint;
 import org.ivar.leveltools.Level;
 import openfl.Assets;
 
@@ -125,7 +125,7 @@ class DameLevel extends Level
 	 */
 	private function parseTilemap(group:FlxGroup, mapNode:Fast, layerNode:Fast):Void
 	{
-		var map:FlxTilemap = new FlxTilemap();
+		var map:FlxTilemap = new FlxTilemapEx();
 		map.loadMap(
 			Assets.getText(assetsPath + mapNode.att.csv),
 			assetsPath + mapNode.att.tiles,
