@@ -1,14 +1,14 @@
 package org.ivar.leveltools;
+import flixel.group.FlxGroup;
+import flixel.tile.FlxTilemap;
+import flixel.util.FlxPath;
 import haxe.xml.Fast;
-import org.flixel.FlxG;
-import org.flixel.FlxGroup;
-import org.flixel.FlxSprite;
-import org.flixel.FlxObject;
-import org.flixel.FlxTilemap;
-import org.flixel.FlxPath;
-import org.flixel.FlxPoint;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxObject;
+import flixel.util.FlxPoint;
 import org.ivar.leveltools.Level;
-import nme.installer.Assets;
+import openfl.Assets;
 
 
 /**
@@ -19,21 +19,29 @@ typedef LinkAddCallback = FlxSprite -> FlxSprite -> Properties -> Void;
 /**
  * @author Nemanja Stojanovic
  * This class deals with loading levels exported from DAME. It currently supports
- * loading tilemap layers, sprite layers, paths layers and links between sprites. 
- * Properties are loaded into a key-value structure and passed as arguments to callbacks, 
+ * loading tilemap layers, sprite layers, paths layers and links between sprites.
+ * Properties are loaded into a key-value structure and passed as arguments to callbacks,
  * however, individual tile properties are not yet supported.
  */
 class DameLevel extends Level
 {
+	
+	/**
+	 * World bounds provided by DAME
+	 */
+	public var boundsMinX:Int;
+	public var boundsMaxX:Int;
+	public var boundsMinY:Int;
+	public var boundsMaxY:Int;
 	/**
 	 * A table of registered link IDs used to link sprites.
 	 */
-	private var linkIds:Hash<FlxSprite>;
+	private var linkIds:Map<String, FlxSprite>;
 
 	/**
 	 * A table of parsed paths, stored by name.
 	 */
-	private var paths:Hash<FlxPath>;
+	private var paths:Map<String, FlxPath>;
 
 	/**
 	* A callback that is called whenever a link is loaded.
@@ -48,12 +56,12 @@ class DameLevel extends Level
 	* @param objectAddCallback a callback that is called every time an object (sprite) is loaded.
 	* @param linkAddCallback a callback that is called every time a link is loaded.
 	*/
-	public function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback, linkAddCallback:LinkAddCallback) 
+	public function new(assetsPath:String, tilemapAddCallback:TilemapAddCallback, objectAddCallback:ObjectAddCallback, linkAddCallback:LinkAddCallback)
 	{
 		super(assetsPath, tilemapAddCallback, objectAddCallback);
 		this.linkAddCallback = linkAddCallback;
-		linkIds = new Hash<FlxSprite>();
-		paths 	= new Hash<FlxPath>();
+		linkIds = new Map<String, FlxSprite>();
+		paths 	= new Map<String, FlxPath>();
 	}
 	
 	/**
@@ -72,7 +80,12 @@ class DameLevel extends Level
 			parseLinks(xml.node.links);
 		
 		if (addToScene)
-			FlxG.getState().add(masterLayer);
+			FlxG.state.add(masterLayer);
+			
+		boundsMaxX = Std.parseInt(xml.att.maxx);
+		boundsMinY = Std.parseInt(xml.att.minx);
+		boundsMaxY = Std.parseInt(xml.att.maxy);
+		boundsMinY = Std.parseInt(xml.att.miny);
 	}
 
 	/**
@@ -103,7 +116,7 @@ class DameLevel extends Level
 	}
 	
 	/**
-	 * Loads a tilemap and adds it to the layer group. 
+	 * Loads a tilemap and adds it to the layer group.
 	 * If specified, the tilemapAddCallback is called with the loaded tilemap as argument.
 	 * @param group The group of the layer this map belongs to
 	 * @param mapNode The node that contains tilemap data
@@ -112,7 +125,7 @@ class DameLevel extends Level
 	 */
 	private function parseTilemap(group:FlxGroup, mapNode:Fast, layerNode:Fast):Void
 	{
-		var map:FlxTilemap = new FlxTilemap();
+		var map:FlxTilemap = new FlxTilemapEx();
 		map.loadMap(
 			Assets.getText(assetsPath + mapNode.att.csv),
 			assetsPath + mapNode.att.tiles,
@@ -121,8 +134,9 @@ class DameLevel extends Level
 			0, 0,
 			Std.parseInt(mapNode.att.drawIdx),
 			Std.parseInt(mapNode.att.collIdx));
-		map.setSolid(mapNode.has.hasHits && mapNode.att.hasHits == "true");
-			
+		map.solid = mapNode.has.hasHits && mapNode.att.hasHits == "true";
+		map.x = Std.parseInt( mapNode.att.x);
+		map.y = Std.parseInt( mapNode.att.y);
 		tilemaps.set(layerNode.att.name, map);
 		group.add(map);
 		if (tilemapAddCallback != null)
@@ -130,9 +144,9 @@ class DameLevel extends Level
 	}
 
 	/**
-	 * Loads a sprite and adds it to the layer group. The sprite is created using reflection, 
-	 * from the class name specified in Dame (the class name should contain the whole package). 
-	 * If the class doesn't exist, it is simply skipped. If the objectAddCallback is specified, 
+	 * Loads a sprite and adds it to the layer group. The sprite is created using reflection,
+	 * from the class name specified in Dame (the class name should contain the whole package).
+	 * If the class doesn't exist, it is simply skipped. If the objectAddCallback is specified,
 	 * it is called with the loaded sprite and it's properties as arguments.
 	 * @todo Maybe throw an exception when the sprite doesn't exist?
 	 * @param group The group of the layer this sprite belongs to.
@@ -145,15 +159,17 @@ class DameLevel extends Level
 		var spriteClass	= Type.resolveClass(spriteNode.x.get("class"));
 		if (spriteClass == null)
 			return;
-		//Since Type.createInstance can't deal with optional args, we have to pass all
-		//declared arguments manually. 
-		var constructor = Std.string(Reflect.field(spriteClass, "new"));
-		var arity = Std.parseInt(constructor.substr(constructor.indexOf(":") + 1));
-		var args = [];
-		for(i in 0 ... arity)
-			args.push(null);
+			
+		// TODO: the following code doesn't work with haxe3,
+		// needs to be replaced by macro
 		
-		var sprite:FlxSprite = cast(Type.createInstance(spriteClass, args), FlxSprite);
+		//var constructor = Std.string(Reflect.field(spriteClass, "new"));
+		//var arity = Std.parseInt(constructor.substr(constructor.indexOf(":") + 1));
+		//var args = [];
+		//for(i in 0 ... arity)
+			//args.push(null);
+		
+		var sprite:FlxSprite = cast(Type.createInstance(spriteClass, []), FlxSprite);
 		sprite.x 		= Std.parseFloat(spriteNode.att.x);
 		sprite.y 		= Std.parseFloat(spriteNode.att.y);
 		sprite.angle	= Std.parseFloat(spriteNode.att.angle);
@@ -176,7 +192,7 @@ class DameLevel extends Level
 	}
 	
 	/**
-	 * Loads a path and adds it to the paths table under the name of the layer. Currently, 
+	 * Loads a path and adds it to the paths table under the name of the layer. Currently,
 	 * only one path per layer is supported, until I find a better way to do this.
 	 * @todo Find a way around the path naming issue
 	 * @param group The group of the layer this path belongs to.
@@ -197,7 +213,7 @@ class DameLevel extends Level
 	}
 	
 	/**
-	 * Loads a link and calls the LinkAddCallback, passing the two linked sprites and the properties 
+	 * Loads a link and calls the LinkAddCallback, passing the two linked sprites and the properties
 	 * of the link. If the sprites the link references do not exist, the link is simply skipped.
 	 * @param linkNode The node that contains link data
 	 * @return Nothing.
@@ -207,7 +223,7 @@ class DameLevel extends Level
 		for (link in linkNode.nodes.link)
 		{
 			var fromId:String = link.att.from;
-			var toId:String = link.att.to;			
+			var toId:String = link.att.to;
 			if (linkIds.exists(fromId) && linkIds.exists(toId))
 			{
 				var properties:Properties;

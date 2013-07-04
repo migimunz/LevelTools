@@ -3,25 +3,25 @@ import haxe.xml.Fast;
 
 /**
  * @author Nemanja Stojanovic
- * This class is used to easily parse key-value properties exported from Dame and Tiled. 
- * It provides some useful methods for retreiving values and allows the user to specify 
+ * This class is used to easily parse key-value properties exported from Dame and Tiled.
+ * It provides some useful methods for retreiving values and allows the user to specify
  * default values for properties.
  */
-class Properties extends Hash<String>
+class Properties
 {
-
+	private var _map:Map<String, String>;
 	/**
 	 * Constructs the object and loads all the properties into the hash table.
 	 * Both keys and values are strings (as this class extends Hash), but helper methods
 	 * provide conversions to other basic types. It treats all nodes named <code>prop</code> and
-	 * <code>property</code> as properties and reads their <code>name</code> and <code>value</code> 
+	 * <code>property</code> as properties and reads their <code>name</code> and <code>value</code>
 	 * attributes.
 	 * @param node The node that contains all the properties.
 	 * @return Nothing.
 	 */
-	public function new(?node:Fast = null) 
+	public function new(?node:Fast = null)
 	{
-		super();
+		_map = new Map<String, String>();
 		if (node == null)
 			return;
 		for (property in node.nodes.property)
@@ -104,5 +104,20 @@ class Properties extends Hash<String>
 		{
 			return def;
 		}
+	}
+	
+	private inline function get(key:String):Dynamic
+	{
+		return _map[key];
+	}
+	
+	private inline function set(key:String, value:String):Void
+	{
+		_map[key] = value;
+	}
+	
+	private inline function exists(key:String):Bool
+	{
+		return _map[key] != null;
 	}
 }
