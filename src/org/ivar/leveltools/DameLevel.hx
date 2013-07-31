@@ -1,12 +1,12 @@
 package org.ivar.leveltools;
-import flixel.group.FlxGroup;
-import flixel.tile.FlxTilemap;
-import flixel.util.FlxPath;
+import org.flixel.FlxGroup;
+import org.flixel.FlxTilemap;
+import org.flixel.FlxPath;
 import haxe.xml.Fast;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.FlxObject;
-import flixel.util.FlxPoint;
+import org.flixel.FlxG;
+import org.flixel.FlxSprite;
+import org.flixel.FlxObject;
+import org.flixel.FlxPoint;
 import org.ivar.leveltools.Level;
 import openfl.Assets;
 

@@ -1,6 +1,6 @@
 package org.ivar.leveltools;
 import flash.geom.ColorTransform;
-import flixel.tile.FlxTilemap;
+import org.flixel.FlxTilemap;
 
 /**
  * ...

@@ -1,8 +1,8 @@
 package org.ivar.leveltools;
-import flixel.tile.FlxTilemap;
-import flixel.group.FlxGroup;
-import flixel.FlxObject;
-import flixel.FlxSprite;
+import org.flixel.FlxTilemap;
+import org.flixel.FlxGroup;
+import org.flixel.FlxObject;
+import org.flixel.FlxSprite;
 import openfl.Assets;
 
 /**

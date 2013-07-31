@@ -1,10 +1,10 @@
 package org.ivar.leveltools;
 import haxe.xml.Fast;
 import openfl.Assets;
-import flixel.FlxState;
+import org.flixel.FlxState;
 import org.ivar.leveltools.Level;
-import flixel.FlxG;
-import flixel.FlxTilemap;
+import org.flixel.FlxG;
+import org.flixel.FlxTilemap;
 
 /**
  * @author Nemanja Stojanovic
